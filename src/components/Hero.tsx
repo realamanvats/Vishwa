@@ -177,6 +177,7 @@ const Hero: React.FC = () => {
                     <p className="text-gray-700">
                       We're working on a new version of our website! Some features might be temporarily unavailable.
                       The new version will be coming soon with exciting updates!
+                      Thankyou A Vats💕
                     </p>
                   </div>
                 </div>
