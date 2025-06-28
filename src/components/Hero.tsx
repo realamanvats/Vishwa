@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
-import { Play, Calendar, Camera, Heart, Sparkles, Star, Flower2, Lamp } from 'lucide-react';
+import { Play, Calendar, Camera, Heart, Sparkles, Star, Flower2, Lamp, X } from 'lucide-react';
 import BackgroundImage from '../file/DSC_4243.JPG';
 
 const Hero: React.FC = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [clickEffects, setClickEffects] = useState<Array<{id: number, x: number, y: number}>>([]);
+  const [showMaintenanceNotice, setShowMaintenanceNotice] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   let clickId = 0;
 
@@ -118,12 +119,81 @@ const Hero: React.FC = () => {
     }
   };
 
+  // Maintenance notice variants
+  const maintenanceVariants = {
+    hidden: { opacity: 0, y: -50 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        type: "spring",
+        damping: 25,
+        stiffness: 500,
+        delay: 1.5
+      }
+    },
+    exit: { 
+      opacity: 0, 
+      y: -50,
+      transition: { 
+        ease: "easeIn",
+        duration: 0.3 
+      } 
+    }
+  };
+
   return (
     <section 
       className="relative min-h-screen flex items-center justify-center overflow-hidden cursor-default"
       ref={containerRef}
       onClick={handleClick}
     >
+      {/* Maintenance Notice Popup */}
+      <AnimatePresence>
+        {showMaintenanceNotice && (
+          <motion.div
+            className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"
+            variants={maintenanceVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-2xl overflow-hidden border border-rose-200">
+              <div className="p-6 relative">
+                <button 
+                  onClick={() => setShowMaintenanceNotice(false)}
+                  className="absolute top-3 right-3 text-gray-500 hover:text-rose-500 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 mr-4">
+                    <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center">
+                      <Sparkles className="w-6 h-6 text-rose-500" />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">Website Under Maintenance</h3>
+                    <p className="text-gray-700">
+                      We're working on a new version of our website! Some features might be temporarily unavailable.
+                      The new version will be coming soon with exciting updates!
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-rose-50 px-6 py-3 flex justify-end">
+                <button
+                  onClick={() => setShowMaintenanceNotice(false)}
+                  className="px-4 py-2 bg-rose-500 text-white font-medium rounded-md hover:bg-rose-600 transition-colors"
+                >
+                  Continue Anyway
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Background with subtle 3D effect */}
       <motion.div
         className="absolute inset-0 z-0"
